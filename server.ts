@@ -8,7 +8,7 @@ const app = express()
 
 app.use(json())
 app.use(indexRouter)
-app.use(authRouter)
+app.use("/api/auth", authRouter)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {

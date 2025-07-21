@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
 import { sendErrorResponse } from "../helpers/error.helper";
 import { client } from "../config/prisma.config";
 import { generateToken } from "../utils/token.utils";
@@ -41,4 +40,47 @@ export async function createUser(req: Request, res: Response) {
         sendErrorResponse(res, {error}, "Error registering your profile. Try again")
         console.log(error);
     }
+}
+
+export async function login(req: Request, res: Response) {
+    const {identifier, password} = req.body
+
+    const user = await client.user.findFirst({
+        where: {
+            OR: [
+                {username: identifier},
+                {email: identifier}
+            ]
+        }
+    })
+
+    if(!user) {
+        sendErrorResponse(res, {
+            error: "Invalid credentials"
+        }, "Your credentials are invalid. Please try again!!")
+        return
+    }
+
+    const match = await bcrypt.compare(password, user.password)
+    if(!match) {
+        sendErrorResponse(res, {
+            error: "invalid credentials"
+        }, "Invalid username/email or password. Could not login")
+        return
+    }
+
+    const payload = {
+        userID: user.userID,
+        profileID: user.profileID,
+        username: user.username,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName
+    }
+
+    const jwt_token = generateToken(payload)
+
+    sendSuccessResponse(res, {
+        jwt_token
+    }, "login successful")
 }
