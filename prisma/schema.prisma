@@ -19,7 +19,7 @@ model User {
   lastName String @map("last_name")
   username String @unique @map("user_name")
   email String @unique @map("email_address")
-  profileID String @unique @map("profile_id")
+  profileID String @unique @default(uuid()) @map("profile_id")
   password String @map("password")
 
   @@map("users")
