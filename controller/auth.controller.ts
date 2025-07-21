@@ -4,6 +4,7 @@ import { sendErrorResponse } from "../helpers/error.helper";
 import { client } from "../config/prisma.config";
 import { generateToken } from "../utils/token.utils";
 import { sendSuccessResponse } from "../helpers/success.helper";
+import { Auth } from "../middleware/verifyToken";
 
 export async function createUser(req: Request, res: Response) {
     try {
@@ -83,4 +84,37 @@ export async function login(req: Request, res: Response) {
     sendSuccessResponse(res, {
         jwt_token
     }, "login successful")
+}
+
+export async function updatePassword(req: Auth, res: Response) {
+    
+    try {
+        const {currentPassword, newPassword} = req.body
+        const userID = req.user?.userID
+        if (!userID || !currentPassword || !newPassword) {
+            return sendErrorResponse(res, {error: "missing credentials"}, "Missing credentials");
+        }
+        const user = await client.user.findUnique({ where: { userID } });
+        if (!user) {
+            return sendErrorResponse(res, { notFound: true }, "User not found", 404);
+        }
+
+        const validPassword = await bcrypt.compare(currentPassword, user.password);
+        if (!validPassword) {
+            return sendErrorResponse(res, { passwordError: true }, "Incorrect current password", 401);
+        }
+
+        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+        await client.user.update({
+            where: { userID },
+            data: { password: hashedNewPassword },
+        });
+
+        sendSuccessResponse(res, {}, "Password updated successfully")
+    } catch(error) {
+        console.log(error);
+        sendErrorResponse(res, {error}, "Oops, something went wrong")   
+    }
+
 }
