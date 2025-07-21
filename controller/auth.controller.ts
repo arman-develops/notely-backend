@@ -118,3 +118,7 @@ export async function updatePassword(req: Auth, res: Response) {
     }
 
 }
+
+export async function logout(_req: Request, _res: Response) {
+    console.log("user logged out");
+}
