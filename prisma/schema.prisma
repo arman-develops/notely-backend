@@ -22,5 +22,10 @@ model User {
   profileID String @unique @default(uuid()) @map("profile_id")
   password String @map("password")
 
+  avatar String @default("") @map("avatar")
+  dateJoined DateTime @default(now()) @map("date_joined")
+  lastProfileUpdate DateTime @default(now()) @map("last_profile_update")
+  isDeleted Boolean @default(false) @map("is_deleted")
+  
   @@map("users")
 }
