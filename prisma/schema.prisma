@@ -27,5 +27,22 @@ model User {
   lastProfileUpdate DateTime @default(now()) @map("last_profile_update")
   isDeleted Boolean @default(false) @map("is_deleted")
   
+  notes Entry[]
+
   @@map("users")
+}
+
+model Entry {
+  noteID String @id @unique @default(uuid()) @map("note_id")
+  noteTitle String @map("note_title")
+  synopsis String @map("synopsis")
+  content String @map("content")
+  isDeleted Boolean @map("is_deleted")
+  dateCreated DateTime @default(now()) @map("date_created")
+  lastUpdated DateTime @default(now()) @map("last_updated")
+
+  authorID String
+  author User @relation(fields: [authorID], references: [userID])
+
+  @@map("notes")
 }
