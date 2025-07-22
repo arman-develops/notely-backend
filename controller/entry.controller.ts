@@ -28,3 +28,13 @@ export async function createEntry(req: Auth, res: Response) {
         sendErrorResponse(res, {error}, "Oops! something went wrong")
     }
 }
+
+export async function getAllEntries(req: Request, res: Response) {
+    try {
+        const entries = await client.entry.findMany()
+        sendSuccessResponse(res, {entries}, "Entries fetched successfully")
+    } catch (error) {
+        console.log(error);
+        sendErrorResponse(res, {error}, "Oops! Something went wrong")
+    }
+}
