@@ -38,3 +38,24 @@ export async function getAllEntries(req: Request, res: Response) {
         sendErrorResponse(res, {error}, "Oops! Something went wrong")
     }
 }
+
+export async function getTrashedEntries(req: Auth, res: Response) {
+    try {
+        const userID = req.user?.userID
+        if(!userID) {
+            return sendErrorResponse(res, {authError: "Authorization failed"}, "unauthorized", 401)
+        }
+
+        const trashedEntries = await client.entry.findMany({
+            where: {
+                isDeleted: true
+            }
+        })
+
+        sendSuccessResponse(res, {trashedEntries}, "Entries fetched successfully")
+
+    } catch (error) {
+        console.log(error);
+        sendErrorResponse(res, {error}, "Oops! Something went wrong")
+    }
+}
