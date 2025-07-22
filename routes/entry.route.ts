@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createEntry, getAllEntries, getTrashedEntries } from "../controller/entry.controller";
+import { createEntry, getAllEntries, getSingleEntry, getTrashedEntries } from "../controller/entry.controller";
 import { verifyToken } from "../middleware/verifyToken";
 
 const entryRouter = Router()
@@ -7,5 +7,6 @@ const entryRouter = Router()
 entryRouter.post("/", verifyToken, createEntry)
 entryRouter.get("/", getAllEntries)
 entryRouter.get("/trash", verifyToken, getTrashedEntries)
+entryRouter.get("/:id", getSingleEntry)
 
 export default entryRouter

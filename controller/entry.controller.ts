@@ -59,3 +59,18 @@ export async function getTrashedEntries(req: Auth, res: Response) {
         sendErrorResponse(res, {error}, "Oops! Something went wrong")
     }
 }
+
+export async function getSingleEntry(req: Auth, res: Response) {
+    try {
+        const {id} = req.params
+        const entry = await client.entry.findFirst({
+            where: {
+                noteID: id
+            }
+        })
+        sendSuccessResponse(res, {entry}, "Entry fetched successfully")
+    } catch (error) {
+        console.log(error);
+        sendErrorResponse(res, {error}, "Oops! Something went wrong")
+    }
+}
