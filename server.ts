@@ -2,6 +2,7 @@ import express, { json } from 'express'
 import dotenv from 'dotenv'
 import indexRouter from './routes/index.route'
 import authRouter from './routes/auth.route'
+import entryRouter from './routes/entry.route'
 dotenv.config()
 
 const app = express()
@@ -9,6 +10,7 @@ const app = express()
 app.use(json())
 app.use(indexRouter)
 app.use("/api/auth", authRouter)
+app.use("/api/entries", entryRouter)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
