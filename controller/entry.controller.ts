@@ -74,3 +74,39 @@ export async function getSingleEntry(req: Auth, res: Response) {
         sendErrorResponse(res, {error}, "Oops! Something went wrong")
     }
 }
+
+export async function updateEntry(req:Auth, res:Response) {
+    try {
+        const userID = req.user?.userID
+        const {title, synopsis, content} = req.body
+        if(!userID) {
+            return sendErrorResponse(res, {authError: "Authorization failed"}, "unauthorized", 401)
+        }
+        const {id} = req.params
+
+        const existingEntry = await client.entry.findFirst({
+            where: {
+                noteID: id
+            }
+        })
+
+        if(!existingEntry || existingEntry.authorID != userID) {
+            return sendErrorResponse(res, {}, "Entry not found", 400)
+        }
+
+        const updatedEntry = await client.entry.update({
+            data: {
+                noteTitle: title,
+                synopsis,
+                content
+            },
+            where: {
+                noteID: id
+            }
+        })
+        sendSuccessResponse(res, {updatedEntry}, "Entry updated sucessfully")
+    } catch (error) {
+        console.log(error);
+        sendErrorResponse(res, {error}, "Oops! Something went wrong")
+    }
+}
