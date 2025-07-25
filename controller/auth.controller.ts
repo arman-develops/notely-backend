@@ -32,10 +32,11 @@ export async function createUser(req: Request, res: Response) {
                 profileID: user.profileID,
                 userID: user.userID,
                 email: user.email,
-                username: user.username
+                username: user.username,
+                hasCompletedOnboarding: false
             }
             const jwt_token = generateToken(jwt_payload)
-            sendSuccessResponse(res, {jwt_token}, "user created successfully", 201)
+            sendSuccessResponse(res, {user: jwt_payload, jwt_token}, "user created successfully", 201)
         })
     } catch (error) {
         sendErrorResponse(res, {error}, "Error registering your profile. Try again")
@@ -76,12 +77,14 @@ export async function login(req: Request, res: Response) {
         username: user.username,
         email: user.email,
         firstName: user.firstName,
-        lastName: user.lastName
+        lastName: user.lastName,
+        hasCompletedOnboarding: false
     }
 
     const jwt_token = generateToken(payload)
 
     sendSuccessResponse(res, {
+        user:payload,
         jwt_token
     }, "login successful")
 }
@@ -121,4 +124,48 @@ export async function updatePassword(req: Auth, res: Response) {
 
 export async function logout(_req: Request, _res: Response) {
     console.log("user logged out");
+}
+
+export async function userOnboarding(req: Auth, res: Response) {
+    try {
+        const userID = req.user?.userID
+        const {bio, avatar, preferences, hasCompletedOnboarding, firstNote} = req.body
+        const onboardUser = await client.user.update({
+            data: {
+                bio,
+                avatar,
+                preferences,
+                hasCompletedOnboarding: true
+            },
+            where: {
+                userID
+            },
+            select: {
+                bio: true,
+                email: true,
+                firstName: true,
+                lastName: true,
+                username: true,
+                preferences: true,
+                hasCompletedOnboarding: true,
+                avatar: true,
+                profileID: true
+            }
+        })
+
+        const veryFirstNote = await client.entry.create({
+            data: {
+                noteTitle: firstNote.title,
+                synopsis: firstNote.synopsis,
+                content: firstNote.content,
+                author: {
+                    connect: {userID}
+                }
+            },
+        })
+
+        sendSuccessResponse(res, {user: onboardUser, }, "User onboarding successful")
+    } catch(error) {
+        sendErrorResponse(res, {error}, "Oops, something went wrong")   
+    }
 }

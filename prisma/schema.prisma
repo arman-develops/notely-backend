@@ -23,6 +23,9 @@ model User {
   password String @map("password")
 
   avatar String @default("") @map("avatar")
+  bio String @default("") @map("bio")
+  preferences String[] @default([]) @map("preferences")
+  hasCompletedOnboarding Boolean @default(false) @map("has_completed_onboarding")
   dateJoined DateTime @default(now()) @map("date_joined")
   lastProfileUpdate DateTime @default(now()) @map("last_profile_update")
   isDeleted Boolean @default(false) @map("is_deleted")

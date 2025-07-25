@@ -1,4 +1,5 @@
 import express, { json } from 'express'
+import cors from 'cors'
 import dotenv from 'dotenv'
 import indexRouter from './routes/index.route'
 import authRouter from './routes/auth.route'
@@ -9,6 +10,9 @@ dotenv.config()
 
 const app = express()
 
+app.use(cors({
+    origin: "http://localhost:5173"
+}))
 app.use(json())
 app.use(indexRouter)
 app.use("/api/auth", authRouter)
