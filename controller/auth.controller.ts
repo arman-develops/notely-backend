@@ -78,7 +78,7 @@ export async function login(req: Request, res: Response) {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        hasCompletedOnboarding: false
+        hasCompletedOnboarding: user.hasCompletedOnboarding
     }
 
     const jwt_token = generateToken(payload)
