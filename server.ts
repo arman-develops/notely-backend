@@ -11,7 +11,7 @@ dotenv.config()
 const app = express()
 
 app.use(cors({
-    origin: "http://localhost:5173"
+    origin: "https://notely-app-tau.vercel.app"
 }))
 app.use(json())
 app.use(indexRouter)
