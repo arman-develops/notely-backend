@@ -75,10 +75,30 @@ export async function getPinnedEntries(req: Auth, res: Response) {
 
         const pinnedEntries = await client.entry.findMany({
             where: {
-                authorID: userID
+                authorID: userID,
+                isPinned: true
             }
         })
         sendSuccessResponse(res, {pinnedEntries}, "Pinned Entries fetched successfully")
+    } catch (error) {
+        sendErrorResponse(res, {error}, "Oops! Something went wrong")
+    }
+}
+
+export async function getBookMarkedEntries(req: Auth, res: Response) {
+    try {
+        const userID = req.user?.userID
+        if(!userID) {
+            return sendErrorResponse(res, {authError: "Authorization failed"}, "unauthorized", 401)
+        }
+
+        const bookMarkedEntries = await client.entry.findMany({
+            where: {
+                authorID: userID,
+                isBookMarked: true
+            }
+        })
+        sendSuccessResponse(res, {bookMarkedEntries}, "Bookmarked Entries fetched successfully")
     } catch (error) {
         sendErrorResponse(res, {error}, "Oops! Something went wrong")
     }

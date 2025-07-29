@@ -128,6 +128,7 @@ export async function pinEntry(req: Auth, res: Response) {
     try {
         const userID = req.user?.userID
         const {id} = req.params
+        const {isPinned} = req.body
 
         if(!userID) {
             return sendErrorResponse(res, {authError: "Authorization failed"}, "unauthorized", 401)
@@ -139,10 +140,34 @@ export async function pinEntry(req: Auth, res: Response) {
                 authorID: userID
             },
             data: {
-                isPinned: true
+                isPinned
             }
         })
         sendSuccessResponse(res, {pinnedEntry}, "Note Pinned Successfully")
+    } catch (error) {
+        sendErrorResponse(res, {error}, "Oops! Something went wrong")
+    }
+}
+
+export async function bookMarkEntry(req: Auth, res: Response) {
+    try {
+        const userID = req.user?.userID
+        const {isBookMarked} = req.body
+        const {id} = req.params
+        if(!userID) {
+            return sendErrorResponse(res, {authError: "Authorization failed"}, "unauthorized", 401)
+        }
+
+        const bookmarkEntry = await client.entry.update({
+            where: {
+                authorID: userID,
+                noteID: id
+            },
+            data: {
+                isBookMarked
+            }
+        })
+        sendSuccessResponse(res, {bookmarkEntry}, "Entry Bookmarked successfully")
     } catch (error) {
         sendErrorResponse(res, {error}, "Oops! Something went wrong")
     }
