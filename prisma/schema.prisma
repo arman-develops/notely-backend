@@ -44,6 +44,7 @@ model Entry {
   dateCreated DateTime @default(now()) @map("date_created")
   lastUpdated DateTime @default(now()) @map("last_updated")
 
+  isPinned Boolean @default(false) @map("is_pinned")
   authorID String
   author User @relation(fields: [authorID], references: [userID])
 

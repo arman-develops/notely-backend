@@ -7,7 +7,7 @@ const authRouter = Router()
 authRouter.post("/register", createUser)
 authRouter.post("/login", login)
 authRouter.post("/password", verifyToken,updatePassword)
-authRouter.put("/onboarding", verifyToken, userOnboarding)
+authRouter.patch("/onboarding", verifyToken, userOnboarding)
 authRouter.post("/logout", logout)
 
 export default authRouter

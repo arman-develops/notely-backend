@@ -123,3 +123,27 @@ export async function deleteEntry(req: Auth, res: Response) {
         sendErrorResponse(res, {error}, "Oops! Something went wrong")
     }
 }
+
+export async function pinEntry(req: Auth, res: Response) {
+    try {
+        const userID = req.user?.userID
+        const {id} = req.params
+
+        if(!userID) {
+            return sendErrorResponse(res, {authError: "Authorization failed"}, "unauthorized", 401)
+        }
+
+        const pinnedEntry = await client.entry.update({
+            where: {
+                noteID: id,
+                authorID: userID
+            },
+            data: {
+                isPinned: true
+            }
+        })
+        sendSuccessResponse(res, {pinnedEntry}, "Note Pinned Successfully")
+    } catch (error) {
+        sendErrorResponse(res, {error}, "Oops! Something went wrong")
+    }
+}

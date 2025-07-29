@@ -29,9 +29,14 @@ export async function createEntry(req: Auth, res: Response) {
     }
 }
 
-export async function getAllEntries(req: Request, res: Response) {
+export async function getAllEntries(req: Auth, res: Response) {
+    const userID = req.user?.userID
     try {
-        const entries = await client.entry.findMany()
+        const entries = await client.entry.findMany({
+            where: {
+                authorID: userID
+            }
+        })
         sendSuccessResponse(res, {entries}, "Entries fetched successfully")
     } catch (error) {
         console.log(error);
@@ -48,7 +53,8 @@ export async function getTrashedEntries(req: Auth, res: Response) {
 
         const trashedEntries = await client.entry.findMany({
             where: {
-                isDeleted: true
+                isDeleted: true,
+                authorID: userID
             }
         })
 
@@ -56,6 +62,24 @@ export async function getTrashedEntries(req: Auth, res: Response) {
 
     } catch (error) {
         console.log(error);
+        sendErrorResponse(res, {error}, "Oops! Something went wrong")
+    }
+}
+
+export async function getPinnedEntries(req: Auth, res: Response) {
+    try {
+        const userID = req.user?.userID
+        if(!userID) {
+            return sendErrorResponse(res, {authError: "Authorization failed"}, "unauthorized", 401)
+        }
+
+        const pinnedEntries = await client.entry.findMany({
+            where: {
+                authorID: userID
+            }
+        })
+        sendSuccessResponse(res, {pinnedEntries}, "Pinned Entries fetched successfully")
+    } catch (error) {
         sendErrorResponse(res, {error}, "Oops! Something went wrong")
     }
 }
