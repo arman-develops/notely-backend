@@ -76,7 +76,6 @@ export async function getPinnedEntries(req: Auth, res: Response) {
         const pinnedEntries = await client.entry.findMany({
             where: {
                 authorID: userID,
-                isPinned: true
             }
         })
         sendSuccessResponse(res, {pinnedEntries}, "Pinned Entries fetched successfully")
@@ -95,7 +94,6 @@ export async function getBookMarkedEntries(req: Auth, res: Response) {
         const bookMarkedEntries = await client.entry.findMany({
             where: {
                 authorID: userID,
-                isBookMarked: true
             }
         })
         sendSuccessResponse(res, {bookMarkedEntries}, "Bookmarked Entries fetched successfully")

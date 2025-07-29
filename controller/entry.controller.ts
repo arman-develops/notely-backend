@@ -141,7 +141,7 @@ export async function pinEntry(req: Auth, res: Response) {
                 authorID: userID
             },
             data: {
-                isPinned
+                isPinned: isPinned
             }
         })
         sendSuccessResponse(res, {pinnedEntry}, "Note Pinned Successfully")
@@ -165,7 +165,7 @@ export async function bookMarkEntry(req: Auth, res: Response) {
                 noteID: id
             },
             data: {
-                isBookMarked
+                isBookMarked: isBookMarked
             }
         })
         sendSuccessResponse(res, {bookmarkEntry}, "Entry Bookmarked successfully")
