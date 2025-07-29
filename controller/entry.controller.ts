@@ -42,7 +42,8 @@ export async function updateEntry(req:Auth, res:Response) {
             data: {
                 noteTitle: title,
                 synopsis,
-                content
+                content,
+                lastUpdated: new Date(Date.now())
             },
             where: {
                 noteID: id
