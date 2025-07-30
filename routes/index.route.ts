@@ -1,9 +1,8 @@
 import { Router } from "express";
 import { indexController } from "../controller/index.controller";
 
+const indexRouter = Router();
 
-const indexRouter = Router()
+indexRouter.get("/", indexController);
 
-indexRouter.get("/", indexController)
-
-export default indexRouter
+export default indexRouter;

@@ -4,16 +4,9 @@ import { client } from "../config/prisma.config";
 import { sendErrorResponse } from "../helpers/error.helper";
 import { sendSuccessResponse } from "../helpers/success.helper";
 
-export async function updateUserInfo(req: Auth, res:Response) {
-  
-    const userID = req.user?.userID
-    const {
-        firstName,
-        lastName,
-        username,
-        email,
-        avatar
-    } = req.body;
+export async function updateUserInfo(req: Auth, res: Response) {
+  const userID = req.user?.userID;
+  const { firstName, lastName, username, email, avatar } = req.body;
 
   if (!userID) {
     return res.status(400).json({ error: "userID is required" });
@@ -34,9 +27,9 @@ export async function updateUserInfo(req: Auth, res:Response) {
       data: updateData,
     });
 
-    sendSuccessResponse(res, {updatedUser}, "Info updated sucessfully")
+    sendSuccessResponse(res, { updatedUser }, "Info updated sucessfully");
   } catch (error) {
     console.error("Update failed:", error);
-    sendErrorResponse(res, {error}, "Oops! Something went wrong")
+    sendErrorResponse(res, { error }, "Oops! Something went wrong");
   }
 }
