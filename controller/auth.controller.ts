@@ -109,12 +109,12 @@ export async function updatePassword(req: Auth, res: Response) {
 
         const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
-        await client.user.update({
+        const updatedUser = await client.user.update({
             where: { userID },
             data: { password: hashedNewPassword },
         });
 
-        sendSuccessResponse(res, {}, "Password updated successfully")
+        sendSuccessResponse(res, {updatedUser}, "Password updated successfully")
     } catch(error) {
         console.log(error);
         sendErrorResponse(res, {error}, "Oops, something went wrong")   

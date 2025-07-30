@@ -2,6 +2,7 @@ import { Response } from "express";
 import { Auth } from "../middleware/verifyToken";
 import { client } from "../config/prisma.config";
 import { sendErrorResponse } from "../helpers/error.helper";
+import { sendSuccessResponse } from "../helpers/success.helper";
 
 export async function updateUserInfo(req: Auth, res:Response) {
   
@@ -33,7 +34,7 @@ export async function updateUserInfo(req: Auth, res:Response) {
       data: updateData,
     });
 
-    return res.json({ success: true, user: updatedUser });
+    sendSuccessResponse(res, {updatedUser}, "Info updated sucessfully")
   } catch (error) {
     console.error("Update failed:", error);
     sendErrorResponse(res, {error}, "Oops! Something went wrong")
